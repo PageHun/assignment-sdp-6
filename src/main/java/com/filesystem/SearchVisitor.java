@@ -6,8 +6,8 @@ public class SearchVisitor implements Visitor {
     private final String nameCriterion;
     private final long minSizeThreshold;
     private final List<String> matchingPaths = new ArrayList<>();
-
     private final Deque<String> pathStack = new ArrayDeque<>();
+    private boolean isRoot = true;
 
     public SearchVisitor(String nameCriterion, long minSizeThreshold) {
         if (nameCriterion == null) {
@@ -34,9 +34,10 @@ public class SearchVisitor implements Visitor {
 
     @Override
     public void visit(DirectoryNode directory) {
-        boolean isRootLevel = pathStack.isEmpty();
-
-        if (!isRootLevel || !directory.getName().isEmpty()) {
+        boolean currentIsRoot = isRoot;
+        if (isRoot) {
+            isRoot = false;
+        } else {
             pathStack.addLast(directory.getName());
         }
 
@@ -44,7 +45,7 @@ public class SearchVisitor implements Visitor {
             child.accept(this);
         }
 
-        if (!isRootLevel || !directory.getName().isEmpty()) {
+        if (!currentIsRoot) {
             pathStack.removeLast();
         }
     }

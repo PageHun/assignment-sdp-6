@@ -9,6 +9,9 @@ public class StatisticsVisitor implements Visitor {
     @Override
     public void visit(FileNode file) {
         fileCount++;
+        if (currentDepth > maxDepth) {
+            maxDepth = currentDepth;
+        }
     }
 
     @Override
